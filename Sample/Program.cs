@@ -1,7 +1,9 @@
 ﻿using System.Data;
 using System.Data.Common;
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using SampleApi;
 using SampleApi.Entities;
 
 var connectionString = "Host=localhost;Port=7432;Database=locks;Username=postgres;Password=postgres;Timeout=180;Command Timeout=180;Include Error Detail=true;";
@@ -12,6 +14,23 @@ var connectionString = "Host=localhost;Port=7432;Database=locks;Username=postgre
 // FixRaceCondition_RepeatableRead();
 // NoRaceCondition_ReadCommited();
 // NoRaceCondition_RepeatableRead();
+//Timestamp_DbUpdateConcurrencyException();
+
+//DbUpdateConcurrencyException: The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See https://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
+void Timestamp_DbUpdateConcurrencyException()
+{
+    var dbContext1 = CreateDbContext();
+    var order1 = dbContext1.Orders.First(x => x.Id == 1);
+    
+    var dbContext2 = CreateDbContext();
+    var order2 = dbContext2.Orders.First(x => x.Id == 1);
+
+    order1.Name = "Version1";
+    dbContext1.SaveChanges();
+
+    order2.Name = "Version2";
+    dbContext2.SaveChanges();
+}
 
 void RaceCondition()
 {
@@ -90,4 +109,14 @@ DbConnection CreateConnection()
     var result = new NpgsqlConnection(connectionString);
     result.Open();
     return result;
+}
+
+
+LocksDbContext CreateDbContext()
+{
+    var options = new DbContextOptionsBuilder<LocksDbContext>()
+        .UseNpgsql(connectionString)
+        .UseSnakeCaseNamingConvention()
+        .Options;
+    return new LocksDbContext(options);
 }
