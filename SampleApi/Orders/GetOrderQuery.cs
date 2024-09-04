@@ -5,7 +5,13 @@ namespace SampleApi.Orders;
 
 public record GetOrderQuery(int Id) : IRequest<GetOrderDto>;
 
-public record GetOrderDto(int Id, string Name, uint Version);
+public record GetOrderDto(
+    int Id, 
+    string Name, 
+    uint Version,
+    GetOrderItemDto[] Items);
+
+public record GetOrderItemDto(int Id, int ProductId, decimal Price, int Quantity); 
 
 public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
 {
@@ -15,12 +21,16 @@ public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
 
     public async Task<GetOrderDto> Handle(GetOrderQuery request, CancellationToken cancellationToken)
     {
-        var result = await _dbContext.Orders
-            .Where(x => x.Id == request.Id)
-            .Select(x => new GetOrderDto(x.Id, x.Name, x.Version))
-            .FirstOrDefaultAsync(cancellationToken);
-        if (result == null) throw new ApplicationException("Not found");
+        var order = await _dbContext.Orders
+            .Include(x => x.Items)
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        if (order == null) throw new ApplicationException("Not found");
 
-        return result;
+        return new GetOrderDto(
+            order.Id,
+            order.Name,
+            order.Version,
+            order.Items.Select(x => new GetOrderItemDto(x.Id, x.ProductId, x.Price, x.Quantity)).ToArray()
+        );
     }
 } 

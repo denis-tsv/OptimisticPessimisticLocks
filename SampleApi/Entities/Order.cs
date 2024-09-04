@@ -10,5 +10,7 @@ public class Order
     [Timestamp]
     public uint Version { get; set; }
 
-    public ICollection<OrderItem> Items { get; set; } = [];
+    public DateTime UpdatedAt { get; set; }
+    
+    public List<OrderItem> Items { get; set; } = [];
 }
