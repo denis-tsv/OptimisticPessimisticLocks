@@ -1,3 +1,4 @@
+using System.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +16,12 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
 
     public async Task Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead, cancellationToken);
+        
         var order = await _dbContext.Orders.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
 
         order.Name = request.Dto.Name;
 
-        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken); //IsolationLevel.ReadCommitted
-        
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         await transaction.CommitAsync(cancellationToken);
