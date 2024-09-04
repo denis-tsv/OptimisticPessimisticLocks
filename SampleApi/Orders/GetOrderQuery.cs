@@ -9,6 +9,7 @@ public record GetOrderDto(
     int Id, 
     string Name, 
     uint Version,
+    int? LockedById,
     GetOrderItemDto[] Items);
 
 public record GetOrderItemDto(int Id, int ProductId, decimal Price, int Quantity); 
@@ -30,6 +31,7 @@ public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
             order.Id,
             order.Name,
             order.Version,
+            order.LockedById,
             order.Items.Select(x => new GetOrderItemDto(x.Id, x.ProductId, x.Price, x.Quantity)).ToArray()
         );
     }

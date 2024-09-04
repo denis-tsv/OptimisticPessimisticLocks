@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SampleApi;
 using SampleApi.Orders;
+using SampleApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<LocksDbContext>(
         .UseNpgsql(builder.Configuration.GetConnectionString("Locks"))
         .UseSnakeCaseNamingConvention());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<UpdateOrderCommand>());
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 var app = builder.Build();
 

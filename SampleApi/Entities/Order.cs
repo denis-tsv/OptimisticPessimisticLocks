@@ -12,5 +12,7 @@ public class Order
 
     public DateTime UpdatedAt { get; set; }
     
+    public int? LockedById { get; set; }
+    
     public List<OrderItem> Items { get; set; } = [];
 }

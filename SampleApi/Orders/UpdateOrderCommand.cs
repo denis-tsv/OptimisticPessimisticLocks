@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SampleApi.Entities;
+using SampleApi.Services;
 
 namespace SampleApi.Orders;
 
@@ -8,27 +9,33 @@ public record UpdateOrderCommand(UpdateOrderDto Dto) : IRequest;
 
 public record UpdateOrderDto(
     int Id,
-    string? Name, 
+    string? Name,
     uint Version,
     CreateOrderItemDto[]? CreatedItems,
     UpdateOrderItemDto[]? UpdatedItems,
     int[]? DeletedItems
-    );
+);
 public record CreateOrderItemDto(int ProductId, int Quantity, decimal Price);
 public record UpdateOrderItemDto(int Id, int Quantity);
 
 public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
 {
     private readonly LocksDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public UpdateOrderCommandHandler(LocksDbContext dbContext) => _dbContext = dbContext;
+    public UpdateOrderCommandHandler(LocksDbContext dbContext, ICurrentUserService currentUserService)
+    {
+        _dbContext = dbContext;
+        _currentUserService = currentUserService;
+    }
 
     public async Task Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
         var order = await _dbContext.Orders
             .Include(x => x.Items)
             .FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
-        if (order.Version != request.Dto.Version) throw new ApplicationException("409 Conflict");
+        if (order.Version != request.Dto.Version) throw new ApplicationException("Refresh and try again");
+        if (order.LockedById != _currentUserService.CurrentUserId) throw new ApplicationException("Order must be locked before edit");
 
         if (!string.IsNullOrEmpty(request.Dto.Name))
         {
@@ -43,7 +50,6 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
                 Quantity = x.Quantity,
                 Price = x.Price
             }));
-            
         }
 
         if (request.Dto.UpdatedItems != null)
