@@ -19,6 +19,10 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
 
         order.Name = request.Dto.Name;
 
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken); //IsolationLevel.ReadCommitted
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
+        
+        await transaction.CommitAsync(cancellationToken);
     }
 }
