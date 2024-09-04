@@ -1,10 +1,8 @@
 ﻿using System.Data;
 using System.Data.Common;
 using Dapper;
-using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using Sample;
-using Sample.Model;
+using SampleApi.Entities;
 
 var connectionString = "Host=localhost;Port=7432;Database=locks;Username=postgres;Password=postgres;Timeout=180;Command Timeout=180;Include Error Detail=true;";
 
@@ -92,34 +90,4 @@ DbConnection CreateConnection()
     var result = new NpgsqlConnection(connectionString);
     result.Open();
     return result;
-}
-
-void CreateDatabase()
-{
-    var options = new DbContextOptionsBuilder<LocksDbContext>()
-        .UseNpgsql(connectionString)
-        .UseSnakeCaseNamingConvention()
-        .Options;
-    var context = new LocksDbContext(options);
-    var created = context.Database.EnsureCreated();
-    if (created)
-    {
-        var order = new Order {Name = "Order"};
-        context.Orders.Add(order);
-        var item1 = new OrderItem
-        {
-            Price = 100,
-            Quantity = 10,
-            Order = order
-        };
-        var item2 = new OrderItem
-        {
-            Price = 200,
-            Quantity = 20,
-            Order = order
-        };
-        context.OrderItems.Add(item1);
-        context.OrderItems.Add(item2);
-        context.SaveChanges();
-    }
 }
