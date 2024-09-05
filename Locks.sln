@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocksApi", "LocksApi\LocksA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExclusiveLockApi", "ExclusiveLockApi\ExclusiveLockApi.csproj", "{3D973D02-C352-42AA-A14A-7E68A1C18693}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvoidLockApi", "AvoidLockApi\AvoidLockApi.csproj", "{CA3F5D8B-DB47-4170-A658-A3264AA49B8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{3D973D02-C352-42AA-A14A-7E68A1C18693}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D973D02-C352-42AA-A14A-7E68A1C18693}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D973D02-C352-42AA-A14A-7E68A1C18693}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA3F5D8B-DB47-4170-A658-A3264AA49B8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA3F5D8B-DB47-4170-A658-A3264AA49B8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA3F5D8B-DB47-4170-A658-A3264AA49B8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA3F5D8B-DB47-4170-A658-A3264AA49B8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
