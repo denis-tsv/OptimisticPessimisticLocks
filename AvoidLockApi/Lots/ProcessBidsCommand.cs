@@ -2,7 +2,7 @@ using AvoidLockApi.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace AvoidLockApi.Images;
+namespace AvoidLockApi.Lots;
 
 public record ProcessBidsCommand(ProcessBidsDto Dto) : IRequest;
 

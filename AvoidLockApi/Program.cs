@@ -1,5 +1,5 @@
 using AvoidLockApi;
-using AvoidLockApi.Images;
+using AvoidLockApi.Lots;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,4 +1,4 @@
-using AvoidLockApi.Images;
+using AvoidLockApi.Lots;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
