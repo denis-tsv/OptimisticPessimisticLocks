@@ -10,7 +10,6 @@ public record UpdateOrderCommand(UpdateOrderDto Dto) : IRequest;
 public record UpdateOrderDto(
     int Id,
     string? Name,
-    uint Version,
     CreateOrderItemDto[]? CreatedItems,
     UpdateOrderItemDto[]? UpdatedItems,
     int[]? DeletedItems

@@ -5,7 +5,7 @@ using SampleApi.Services;
 namespace SampleApi.Orders;
 
 public record UnlockOrderCommand(UnlockOrderDto Dto) : IRequest;
-public record UnlockOrderDto(int Id, uint Version) : IRequest;
+public record UnlockOrderDto(int Id) : IRequest;
 
 public class UnlockOrderCommandHandler : IRequestHandler<UnlockOrderCommand>
 {
