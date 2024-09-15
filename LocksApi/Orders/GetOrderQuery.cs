@@ -8,8 +8,7 @@ public record GetOrderQuery(int Id) : IRequest<GetOrderDto>;
 public record GetOrderDto(
     int Id, 
     string Name, 
-    uint Version,
-    int? LockedById,
+    int? LockOwnerId,
     GetOrderItemDto[] Items);
 
 public record GetOrderItemDto(int Id, int ProductId, decimal Price, int Quantity); 
@@ -30,8 +29,7 @@ public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
         return new GetOrderDto(
             order.Id,
             order.Name,
-            order.Version,
-            order.LockedById,
+            order.LockOwnerId,
             order.Items.Select(x => new GetOrderItemDto(x.Id, x.ProductId, x.Price, x.Quantity)).ToArray()
         );
     }

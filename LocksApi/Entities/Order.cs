@@ -7,12 +7,10 @@ public class Order
     public int Id { get; set; }
     public required string Name { get; set; }
     
-    [Timestamp]
-    public uint Version { get; set; }
-
     public DateTime UpdatedAt { get; set; }
     
-    public int? LockedById { get; set; }
+    [ConcurrencyCheck]
+    public int? LockOwnerId { get; set; }
     
     public List<OrderItem> Items { get; set; } = [];
 }

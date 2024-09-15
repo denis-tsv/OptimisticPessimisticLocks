@@ -21,11 +21,10 @@ public class UnlockOrderCommandHandler : IRequestHandler<UnlockOrderCommand>
     public async Task Handle(UnlockOrderCommand request, CancellationToken cancellationToken)
     {
         var order = await _dbContext.Orders.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
-        if (order.Version != request.Dto.Version) throw new ApplicationException("Refresh and try again");
-        if (order.LockedById == null) throw new ApplicationException("Order must be locked to unlock it");
-        if (order.LockedById != _currentUserService.CurrentUserId) throw new ApplicationException("Locked by another user");
+        if (order.LockOwnerId == null) throw new ApplicationException("Order must be locked to unlock it");
+        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new ApplicationException("Locked by another user");
 
-        order.LockedById = null;
+        order.LockOwnerId = null;
         
         await _dbContext.SaveChangesAsync(cancellationToken);
     }

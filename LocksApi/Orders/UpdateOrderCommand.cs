@@ -34,8 +34,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
         var order = await _dbContext.Orders
             .Include(x => x.Items)
             .FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
-        if (order.Version != request.Dto.Version) throw new ApplicationException("Refresh and try again");
-        if (order.LockedById != _currentUserService.CurrentUserId) throw new ApplicationException("Order must be locked before edit");
+        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new ApplicationException("Order must be locked before edit");
 
         if (!string.IsNullOrEmpty(request.Dto.Name))
         {
@@ -66,7 +65,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
             order.Items.RemoveAll(x => request.Dto.DeletedItems.Contains(x.Id));
         }
         
-        order.UpdatedAt = DateTime.UtcNow; //update version
+        order.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
     }

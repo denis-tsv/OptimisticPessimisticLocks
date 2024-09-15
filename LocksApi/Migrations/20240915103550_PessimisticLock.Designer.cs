@@ -12,7 +12,7 @@ using SampleApi;
 namespace SampleApi.Migrations
 {
     [DbContext(typeof(LocksDbContext))]
-    [Migration("20240904052642_PessimisticLock")]
+    [Migration("20240915103550_PessimisticLock")]
     partial class PessimisticLock
     {
         /// <inheritdoc />
@@ -34,9 +34,10 @@ namespace SampleApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("LockedById")
+                    b.Property<int?>("LockOwnerId")
+                        .IsConcurrencyToken()
                         .HasColumnType("integer")
-                        .HasColumnName("locked_by_id");
+                        .HasColumnName("lock_owner_id");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -46,12 +47,6 @@ namespace SampleApi.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
-
-                    b.Property<uint>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
 
                     b.HasKey("Id")
                         .HasName("pk_orders");

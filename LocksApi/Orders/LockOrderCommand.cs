@@ -5,7 +5,7 @@ using SampleApi.Services;
 namespace SampleApi.Orders;
 
 public record LockOrderCommand(LockOrderDto Dto) : IRequest;
-public record LockOrderDto(int Id, uint Version) : IRequest;
+public record LockOrderDto(int Id) : IRequest;
 
 public class LockOrderCommandHandler : IRequestHandler<LockOrderCommand>
 {
@@ -21,10 +21,9 @@ public class LockOrderCommandHandler : IRequestHandler<LockOrderCommand>
     public async Task Handle(LockOrderCommand request, CancellationToken cancellationToken)
     {
         var order = await _dbContext.Orders.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
-        if (order.Version != request.Dto.Version) throw new ApplicationException("Refresh and try again");
-        if (order.LockedById != null) throw new ApplicationException("Order must be unlocked to lock it");
+        if (order.LockOwnerId != null) throw new ApplicationException("Order must be unlocked to lock it");
 
-        order.LockedById = _currentUserService.CurrentUserId;
+        order.LockOwnerId = _currentUserService.CurrentUserId;
         
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
