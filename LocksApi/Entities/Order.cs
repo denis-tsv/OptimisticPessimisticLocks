@@ -9,8 +9,5 @@ public class Order
     
     public DateTime UpdatedAt { get; set; }
     
-    [ConcurrencyCheck]
-    public int? LockOwnerId { get; set; }
-    
     public List<OrderItem> Items { get; set; } = [];
 }

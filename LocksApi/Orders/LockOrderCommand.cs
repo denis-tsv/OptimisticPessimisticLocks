@@ -1,5 +1,5 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using SampleApi.Entities;
 using SampleApi.Services;
 
 namespace SampleApi.Orders;
@@ -20,10 +20,15 @@ public class LockOrderCommandHandler : IRequestHandler<LockOrderCommand>
 
     public async Task Handle(LockOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = await _dbContext.Orders.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
-        if (order.LockOwnerId != null) throw new ApplicationException("Order must be unlocked to lock it");
-
-        order.LockOwnerId = _currentUserService.CurrentUserId;
+        var @lock = new Lock
+        {
+            OwnerId = _currentUserService.CurrentUserId,
+            EntityId = request.Dto.Id,
+            EntityType = nameof(Order),
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        _dbContext.Locks.Add(@lock);
         
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
