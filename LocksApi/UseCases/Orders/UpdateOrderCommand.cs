@@ -8,6 +8,7 @@ public record UpdateOrderCommand(UpdateOrderDto Dto) : IRequest;
 
 public record UpdateOrderDto(
     int Id,
+    uint Version,
     CreateOrderItemDto[]? CreatedItems,
     UpdateOrderItemDto[]? UpdatedItems,
     int[]? DeletedItems
@@ -26,6 +27,10 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
         var order = await _dbContext.Orders
             .Include(x => x.Items)
             .FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
+
+        if (order.Version != request.Dto.Version) throw new ApplicationException("409 Conflict");
+
+        order.UpdatedAt = DateTime.UtcNow; //update version
 
         if (request.Dto.CreatedItems != null)
         {

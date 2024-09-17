@@ -5,7 +5,7 @@ namespace LocksApi.UseCases.Orders;
 
 public record GetOrderQuery(int Id) : IRequest<GetOrderDto>;
 
-public record GetOrderDto(int Id, GetOrderItemDto[] Items);
+public record GetOrderDto(int Id, uint Version, GetOrderItemDto[] Items);
 public record GetOrderItemDto(int Id, int ProductId, decimal Price, int Quantity); 
 
 public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
@@ -23,6 +23,7 @@ public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
 
         return new GetOrderDto(
             order.Id,
+            order.Version,
             order.Items.Select(x => new GetOrderItemDto(x.Id, x.ProductId, x.Price, x.Quantity)).ToArray()
         );
     }
