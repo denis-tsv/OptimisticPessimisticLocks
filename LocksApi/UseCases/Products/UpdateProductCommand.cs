@@ -1,4 +1,3 @@
-using System.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +15,10 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
 
     public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead, cancellationToken);
-
         var product = await _dbContext.Products.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
 
         product.Name = request.Dto.Name;
         
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
-        await transaction.CommitAsync(cancellationToken);
     }
 }
