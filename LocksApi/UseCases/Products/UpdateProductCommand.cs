@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace SampleApi.UseCases.Products;
+namespace LocksApi.UseCases.Products;
 
 public record UpdateProductCommand(UpdateProductDto Dto) : IRequest;
 

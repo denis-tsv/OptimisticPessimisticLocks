@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using System.Data.Common;
 using Dapper;
+using LocksApi.Entities;
 using Npgsql;
-using SampleApi.Entities;
 
 var connectionString = "Host=localhost;Port=7432;Database=locks;Username=postgres;Password=postgres;Timeout=180;Command Timeout=180;Include Error Detail=true;";
 

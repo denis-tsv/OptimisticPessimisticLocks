@@ -1,4 +1,4 @@
-namespace SampleApi.Entities;
+namespace LocksApi.Entities;
 
 public class OrderItem
 {

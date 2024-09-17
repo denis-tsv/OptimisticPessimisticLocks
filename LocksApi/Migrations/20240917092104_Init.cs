@@ -3,10 +3,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace SampleApi.Migrations
+namespace LocksApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,12 +16,24 @@ namespace SampleApi.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_orders", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "products",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_orders", x => x.id);
+                    table.PrimaryKey("pk_products", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -30,6 +42,7 @@ namespace SampleApi.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    product_id = table.Column<int>(type: "integer", nullable: false),
                     quantity = table.Column<int>(type: "integer", nullable: false),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     order_id = table.Column<int>(type: "integer", nullable: false)
@@ -43,12 +56,23 @@ namespace SampleApi.Migrations
                         principalTable: "orders",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_order_items_products_product_id",
+                        column: x => x.product_id,
+                        principalTable: "products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "ix_order_items_order_id",
                 table: "order_items",
                 column: "order_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_order_items_product_id",
+                table: "order_items",
+                column: "product_id");
         }
 
         /// <inheritdoc />
@@ -59,6 +83,9 @@ namespace SampleApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "orders");
+
+            migrationBuilder.DropTable(
+                name: "products");
         }
     }
 }

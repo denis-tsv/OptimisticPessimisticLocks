@@ -1,8 +1,8 @@
+using LocksApi.UseCases.Orders;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SampleApi.UseCases.Orders;
 
-namespace SampleApi.Controllers;
+namespace LocksApi.Controllers;
 
 [ApiController]
 [Route("orders")]

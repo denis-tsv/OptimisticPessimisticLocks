@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace SampleApi.UseCases.Orders;
+namespace LocksApi.UseCases.Orders;
 
 public record GetOrderQuery(int Id) : IRequest<GetOrderDto>;
 

@@ -1,7 +1,7 @@
+using LocksApi.Entities;
 using Microsoft.EntityFrameworkCore;
-using SampleApi.Entities;
 
-namespace SampleApi;
+namespace LocksApi;
 
 public class LocksDbContext : DbContext
 {

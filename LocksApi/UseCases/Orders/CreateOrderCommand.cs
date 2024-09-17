@@ -1,7 +1,7 @@
+using LocksApi.Entities;
 using MediatR;
-using SampleApi.Entities;
 
-namespace SampleApi.UseCases.Orders;
+namespace LocksApi.UseCases.Orders;
 
 public record CreateOrderCommand(CreateOrderDto Dto) : IRequest;
 

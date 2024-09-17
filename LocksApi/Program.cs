@@ -1,6 +1,6 @@
+using LocksApi;
+using LocksApi.UseCases.Orders;
 using Microsoft.EntityFrameworkCore;
-using SampleApi;
-using SampleApi.UseCases.Orders;
 
 var builder = WebApplication.CreateBuilder(args);
 

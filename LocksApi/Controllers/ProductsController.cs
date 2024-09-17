@@ -1,8 +1,8 @@
+using LocksApi.UseCases.Products;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SampleApi.UseCases.Products;
 
-namespace SampleApi.Controllers;
+namespace LocksApi.Controllers;
 
 [ApiController]
 [Route("products")]

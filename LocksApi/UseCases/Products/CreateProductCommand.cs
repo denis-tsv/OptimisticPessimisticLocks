@@ -1,7 +1,7 @@
+using LocksApi.Entities;
 using MediatR;
-using SampleApi.Entities;
 
-namespace SampleApi.UseCases.Products;
+namespace LocksApi.UseCases.Products;
 
 public record CreateProductCommand(CreateProductDto Dto) : IRequest;
 

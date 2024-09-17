@@ -1,8 +1,8 @@
+using LocksApi.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SampleApi.Entities;
 
-namespace SampleApi.UseCases.Orders;
+namespace LocksApi.UseCases.Orders;
 
 public record UpdateOrderCommand(UpdateOrderDto Dto) : IRequest;
 
