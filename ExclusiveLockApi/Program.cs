@@ -16,7 +16,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ExclusiveLockDbContext>(
     opt => opt
         .UseNpgsql(builder.Configuration.GetConnectionString("ExclusiveLock"))
-        .UseSnakeCaseNamingConvention());
+        .UseSnakeCaseNamingConvention()
+        .AddInterceptors(new ForUpdateInterceptor())
+    );
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<StartRenderImageCommand>());
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 LinqToDBForEFTools.Initialize();

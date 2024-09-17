@@ -23,7 +23,9 @@ public class StartRenderImageEfCommandHandler : IRequestHandler<StartRenderImage
         var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
         
         var account = await _dbContext.Accounts
-            .FromSql($"SELECT * FROM accounts WHERE user_id = {_currentUserService.CurrentUserId} FOR UPDATE")
+            //.FromSql($"SELECT * FROM accounts WHERE user_id = {_currentUserService.CurrentUserId} FOR UPDATE")
+            .Where(x => x.UserId == _currentUserService.CurrentUserId)
+            .ForUpdate()
             .FirstAsync(cancellationToken);
 
         if (account.Volume >= Render.Cost)
