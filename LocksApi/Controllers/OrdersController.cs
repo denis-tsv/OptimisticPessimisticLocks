@@ -35,4 +35,20 @@ public class OrdersController : ControllerBase
         
         return Ok();
     }
+    
+    [HttpPost("lock")]
+    public async Task<IActionResult> LockOrder([FromBody] LockOrderDto dto, CancellationToken cancellationToken)
+    {
+        await _sender.Send(new LockOrderCommand(dto), cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPost("unlock")]
+    public async Task<IActionResult> UnlockOrder([FromBody] UnlockOrderDto dto, CancellationToken cancellationToken)
+    {
+        await _sender.Send(new UnlockOrderCommand(dto), cancellationToken);
+
+        return Ok();
+    }
 }
