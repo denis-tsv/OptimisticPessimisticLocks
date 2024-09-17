@@ -1,3 +1,4 @@
+using LocksApi.Entities;
 using LocksApi.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +21,12 @@ public class UnlockOrderCommandHandler : IRequestHandler<UnlockOrderCommand>
 
     public async Task Handle(UnlockOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = await _dbContext.Orders.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
-        if (order.LockOwnerId == null) throw new ApplicationException("Order must be locked to unlock it");
-        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new ApplicationException("Locked by another user");
+        var deleted = await _dbContext.Locks
+            .Where(x => x.OwnerId == _currentUserService.CurrentUserId && 
+                        x.EntityType == nameof(Order) && 
+                        x.EntityId == request.Dto.Id)
+            .ExecuteDeleteAsync(cancellationToken);
 
-        order.LockOwnerId = null;
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        if (deleted == 0) throw new ApplicationException("Order must be locked before unlock");
     }
 }
