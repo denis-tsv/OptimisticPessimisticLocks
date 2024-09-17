@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SampleApi;
-using SampleApi.Orders;
+using SampleApi.UseCases.Orders;
 
 var builder = WebApplication.CreateBuilder(args);
 

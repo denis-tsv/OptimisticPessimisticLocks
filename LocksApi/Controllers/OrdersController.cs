@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SampleApi.Orders;
+using SampleApi.UseCases.Orders;
 
 namespace SampleApi.Controllers;
 
