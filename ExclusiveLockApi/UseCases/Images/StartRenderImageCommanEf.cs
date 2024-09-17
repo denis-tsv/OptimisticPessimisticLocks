@@ -3,7 +3,7 @@ using ExclusiveLockApi.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExclusiveLockApi.Images;
+namespace ExclusiveLockApi.UseCases.Images;
 
 public record StartRenderImageEfCommand : IRequest;
 

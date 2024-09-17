@@ -1,5 +1,5 @@
 using AvoidLockApi;
-using AvoidLockApi.Lots;
+using AvoidLockApi.UseCases.Lots;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

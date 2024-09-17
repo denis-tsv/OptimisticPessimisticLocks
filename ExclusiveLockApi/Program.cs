@@ -1,6 +1,6 @@
 using ExclusiveLockApi;
-using ExclusiveLockApi.Images;
 using ExclusiveLockApi.Services;
+using ExclusiveLockApi.UseCases.Images;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

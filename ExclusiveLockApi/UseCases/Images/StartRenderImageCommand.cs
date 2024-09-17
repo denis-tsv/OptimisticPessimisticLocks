@@ -5,7 +5,7 @@ using LinqToDB.DataProvider.PostgreSQL;
 using LinqToDB.EntityFrameworkCore;
 using MediatR;
 
-namespace ExclusiveLockApi.Images;
+namespace ExclusiveLockApi.UseCases.Images;
 
 public record StartRenderImageCommand : IRequest;
 

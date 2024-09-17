@@ -1,4 +1,4 @@
-using AvoidLockApi.Lots;
+using AvoidLockApi.UseCases.Lots;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

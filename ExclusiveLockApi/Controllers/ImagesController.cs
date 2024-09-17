@@ -1,4 +1,4 @@
-using ExclusiveLockApi.Images;
+using ExclusiveLockApi.UseCases.Images;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
