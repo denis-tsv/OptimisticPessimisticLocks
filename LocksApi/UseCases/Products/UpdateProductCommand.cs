@@ -18,7 +18,11 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
         var product = await _dbContext.Products.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
 
         product.Name = request.Dto.Name;
-
+        
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken); //IsolationLevel.ReadCommitted
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
+        
+        await transaction.CommitAsync(cancellationToken);
     }
 }
