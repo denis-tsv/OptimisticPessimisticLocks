@@ -5,7 +5,7 @@ namespace LocksApi.UseCases.Products;
 
 public record UpdateProductCommand(UpdateProductDto Dto) : IRequest;
 
-public record UpdateProductDto(int Id, string Name);
+public record UpdateProductDto(int Id, string Name, uint Version);
 
 public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
 {
@@ -16,6 +16,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
     public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         var product = await _dbContext.Products.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
+
+        if (product.Version != request.Dto.Version) throw new ApplicationException("409 Conflict");
 
         product.Name = request.Dto.Name;
         
