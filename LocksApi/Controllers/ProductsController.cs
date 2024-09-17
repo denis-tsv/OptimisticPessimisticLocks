@@ -13,7 +13,7 @@ public class ProductsController : ControllerBase
     public ProductsController(ISender sender) => _sender = sender;
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetOrder(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProduct(int id, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new GetProductQuery(id), cancellationToken);
         
@@ -21,7 +21,7 @@ public class ProductsController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] CreateProductDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto, CancellationToken cancellationToken)
     {
         await _sender.Send(new CreateProductCommand(dto), cancellationToken);
         
@@ -29,7 +29,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateOrder([FromBody]UpdateProductDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateProduct([FromBody]UpdateProductDto dto, CancellationToken cancellationToken)
     {
         await _sender.Send(new UpdateProductCommand(dto), cancellationToken);
         
