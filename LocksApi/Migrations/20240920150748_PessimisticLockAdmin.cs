@@ -33,9 +33,9 @@ namespace LocksApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_locks_owner_id_entity_type_entity_id",
+                name: "ix_locks_entity_type_entity_id",
                 table: "locks",
-                columns: new[] { "owner_id", "entity_type", "entity_id" },
+                columns: new[] { "entity_type", "entity_id" },
                 unique: true);
         }
 

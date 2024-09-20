@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocksApi.Migrations
 {
     [DbContext(typeof(LocksDbContext))]
-    [Migration("20240917175910_PessimisticLockAdmin")]
+    [Migration("20240920150748_PessimisticLockAdmin")]
     partial class PessimisticLockAdmin
     {
         /// <inheritdoc />
@@ -54,9 +54,9 @@ namespace LocksApi.Migrations
                     b.HasKey("Id")
                         .HasName("pk_locks");
 
-                    b.HasIndex("OwnerId", "EntityType", "EntityId")
+                    b.HasIndex("EntityType", "EntityId")
                         .IsUnique()
-                        .HasDatabaseName("ix_locks_owner_id_entity_type_entity_id");
+                        .HasDatabaseName("ix_locks_entity_type_entity_id");
 
                     b.ToTable("locks", (string)null);
                 });

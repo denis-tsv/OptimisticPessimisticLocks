@@ -51,9 +51,9 @@ namespace LocksApi.Migrations
                     b.HasKey("Id")
                         .HasName("pk_locks");
 
-                    b.HasIndex("OwnerId", "EntityType", "EntityId")
+                    b.HasIndex("EntityType", "EntityId")
                         .IsUnique()
-                        .HasDatabaseName("ix_locks_owner_id_entity_type_entity_id");
+                        .HasDatabaseName("ix_locks_entity_type_entity_id");
 
                     b.ToTable("locks", (string)null);
                 });

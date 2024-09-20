@@ -17,7 +17,7 @@ public class LocksDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Lock>()
-            .HasIndex(x => new {x.OwnerId, x.EntityType, x.EntityId})
+            .HasIndex(x => new {x.EntityType, x.EntityId})
             .IsUnique();
     }
 }
