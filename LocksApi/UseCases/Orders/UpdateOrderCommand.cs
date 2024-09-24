@@ -1,4 +1,5 @@
 using LocksApi.Entities;
+using LocksApi.UseCases.Exceptions;
 using LocksApi.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,8 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
     {
         var order = await _dbContext.Orders
             .Include(x => x.Items)
-            .FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == request.Dto.Id, cancellationToken);
+        if (order == null) throw new NotFoundApplicationException();
 
         if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new ApplicationException("Order must be locked before edit");
 
