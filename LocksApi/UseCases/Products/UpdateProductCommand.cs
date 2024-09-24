@@ -1,3 +1,4 @@
+using LocksApi.UseCases.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
 
     public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await _dbContext.Products.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
+        var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == request.Dto.Id, cancellationToken);
+        if (product == null) throw new NotFoundApplicationException();
 
         if (product.Version != request.Dto.Version) throw new ApplicationException("409 Conflict");
 

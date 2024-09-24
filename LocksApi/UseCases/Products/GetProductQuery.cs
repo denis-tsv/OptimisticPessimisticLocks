@@ -1,3 +1,4 @@
+using LocksApi.UseCases.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ public class GetOrderQueryHandler : IRequestHandler<GetProductQuery, GetProductD
             .Where(x => x.Id == request.Id)
             .Select(x => new GetProductDto(x.Id, x.Name, x.Version))
             .FirstOrDefaultAsync(cancellationToken);
-        if (result == null) throw new ApplicationException("Not found");
+        if (result == null) throw new NotFoundApplicationException();
 
         return result;
     }
