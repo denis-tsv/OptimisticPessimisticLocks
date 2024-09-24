@@ -1,3 +1,4 @@
+using LocksApi.UseCases.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
         var order = await _dbContext.Orders
             .Include(x => x.Items)
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-        if (order == null) throw new ApplicationException("Not found");
+        if (order == null) throw new NotFoundApplicationException();
 
         return new GetOrderDto(
             order.Id,
