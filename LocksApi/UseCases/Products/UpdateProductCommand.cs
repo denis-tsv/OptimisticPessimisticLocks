@@ -1,4 +1,5 @@
 using System.Data;
+using LocksApi.UseCases.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
     {
         await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead, cancellationToken);
 
-        var product = await _dbContext.Products.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
+        var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == request.Dto.Id, cancellationToken);
+        if (product == null) throw new NotFoundApplicationException();
 
         product.Name = request.Dto.Name;
         
