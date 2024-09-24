@@ -23,7 +23,7 @@ public class ResponseStatusCodeMiddleware
         {
             httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
         }
-        catch (DbUpdateConcurrencyException)
+        catch (VersionObsoleteApplicationException)
         {
             httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
         }
