@@ -23,7 +23,7 @@ public class ResponseStatusCodeMiddleware
         {
             httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
         }
-        catch (InvalidOperationException e) when (e.InnerException is DbUpdateException {InnerException: PostgresException {SqlState: "40001"}})//could not serialize access due to concurrent update
+        catch (DbUpdateConcurrencyException)
         {
             httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
         }
