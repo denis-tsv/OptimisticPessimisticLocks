@@ -1,4 +1,6 @@
 using LocksApi.UseCases.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace LocksApi;
 
@@ -20,6 +22,10 @@ public class ResponseStatusCodeMiddleware
         catch (NotFoundApplicationException)
         {
             httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+        }
+        catch (InvalidOperationException e) when (e.InnerException is DbUpdateException {InnerException: PostgresException {SqlState: "40001"}})//could not serialize access due to concurrent update
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
         }
     }
 }
