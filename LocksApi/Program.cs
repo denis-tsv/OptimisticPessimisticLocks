@@ -19,6 +19,8 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Up
 
 var app = builder.Build();
 
+app.UseMiddleware<ResponseStatusCodeMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
