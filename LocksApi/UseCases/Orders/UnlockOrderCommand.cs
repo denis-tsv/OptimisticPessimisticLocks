@@ -1,4 +1,5 @@
 using LocksApi.Services;
+using LocksApi.UseCases.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,7 @@ public class UnlockOrderCommandHandler : IRequestHandler<UnlockOrderCommand>
     {
         var order = await _dbContext.Orders.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
         if (order.LockOwnerId == null) throw new ApplicationException("Order must be locked to unlock it");
-        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new ApplicationException("Locked by another user");
+        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new LockedApplicationException();
 
         order.LockOwnerId = null;
 

@@ -35,7 +35,8 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
             .FirstOrDefaultAsync(x => x.Id == request.Dto.Id, cancellationToken);
         if (order == null) throw new NotFoundApplicationException();
 
-        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new ApplicationException("Order must be locked before edit");
+        if (order.LockOwnerId == null) throw new ApplicationException("Order must be locked before edit");
+        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new LockedApplicationException();
 
         order.UpdatedAt = DateTime.UtcNow;
 
