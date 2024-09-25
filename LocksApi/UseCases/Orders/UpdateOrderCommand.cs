@@ -9,6 +9,7 @@ public record UpdateOrderCommand(UpdateOrderDto Dto) : IRequest;
 
 public record UpdateOrderDto(
     int Id,
+    uint Version,
     CreateOrderItemDto[]? CreatedItems,
     UpdateOrderItemDto[]? UpdatedItems,
     int[]? DeletedItems
@@ -28,6 +29,10 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
             .Include(x => x.Items)
             .FirstOrDefaultAsync(x => x.Id == request.Dto.Id, cancellationToken);
         if (order == null) throw new NotFoundApplicationException();
+
+        if (order.Version != request.Dto.Version) throw new VersionObsoleteApplicationException();
+
+        order.UpdatedAt = DateTime.UtcNow; //update version
 
         if (request.Dto.CreatedItems != null)
         {
