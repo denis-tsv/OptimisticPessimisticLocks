@@ -1,4 +1,6 @@
 using LocksApi.UseCases.Exceptions;
+using LocksApi.Entities;
+using LocksApi.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,8 +14,13 @@ public record GetOrderItemDto(int Id, int ProductId, decimal Price, int Quantity
 public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
 {
     private readonly LocksDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public GetOrderQueryHandler(LocksDbContext dbContext) => _dbContext = dbContext;
+    public GetOrderQueryHandler(LocksDbContext dbContext, ICurrentUserService currentUserService)
+    {
+        _dbContext = dbContext;
+        _currentUserService = currentUserService;
+    }
 
     public async Task<GetOrderDto> Handle(GetOrderQuery request, CancellationToken cancellationToken)
     {
@@ -22,9 +29,15 @@ public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (order == null) throw new NotFoundApplicationException();
 
+        var @lock = await _dbContext.Locks.FirstOrDefaultAsync(x =>
+                x.OwnerId == _currentUserService.CurrentUserId &&
+                x.EntityType == nameof(Order) &&
+                x.Id == request.Id,
+            cancellationToken);
+        
         return new GetOrderDto(
             order.Id,
-            order.LockOwnerId,
+            @lock?.OwnerId,
             order.Items.Select(x => new GetOrderItemDto(x.Id, x.ProductId, x.Price, x.Quantity)).ToArray()
         );
     }

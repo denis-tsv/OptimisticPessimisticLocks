@@ -1,3 +1,4 @@
+using LocksApi.Entities;
 using LocksApi.Services;
 using LocksApi.UseCases.Exceptions;
 using MediatR;
@@ -21,12 +22,13 @@ public class UnlockOrderCommandHandler : IRequestHandler<UnlockOrderCommand>
 
     public async Task Handle(UnlockOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = await _dbContext.Orders.FirstAsync(x => x.Id == request.Dto.Id, cancellationToken);
-        if (order.LockOwnerId == null) throw new ApplicationException("Order must be locked to unlock it");
-        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new LockedApplicationException();
+        var @lock = await _dbContext.Locks
+            .FirstOrDefaultAsync(x => x.EntityType == nameof(Order) && x.EntityId == request.Dto.Id, cancellationToken);
+        if (@lock == null) throw new ApplicationException("Order must be locked before unlock");
+        if (@lock.OwnerId != _currentUserService.CurrentUserId) throw new LockedApplicationException();
 
-        order.LockOwnerId = null;
-
+        _dbContext.Locks.Remove(@lock);
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

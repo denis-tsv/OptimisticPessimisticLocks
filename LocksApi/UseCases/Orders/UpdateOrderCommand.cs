@@ -30,14 +30,16 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
 
     public async Task Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
+        var @lock = await _dbContext.Locks
+            .FirstOrDefaultAsync(x => x.EntityType == nameof(Order) && x.EntityId == request.Dto.Id, cancellationToken);
+        if (@lock == null) throw new ApplicationException("Order must be locked before edit");
+        if (@lock.OwnerId != _currentUserService.CurrentUserId) throw new LockedApplicationException();
+        
         var order = await _dbContext.Orders
             .Include(x => x.Items)
             .FirstOrDefaultAsync(x => x.Id == request.Dto.Id, cancellationToken);
         if (order == null) throw new NotFoundApplicationException();
-
-        if (order.LockOwnerId == null) throw new ApplicationException("Order must be locked before edit");
-        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new LockedApplicationException();
-
+        
         order.UpdatedAt = DateTime.UtcNow;
 
         if (request.Dto.CreatedItems != null)
