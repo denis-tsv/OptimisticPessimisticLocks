@@ -1,3 +1,4 @@
+using LocksApi.UseCases.Exceptions;
 using LocksApi.Entities;
 using LocksApi.Services;
 using MediatR;
@@ -26,7 +27,7 @@ public class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, GetOrderDto>
         var order = await _dbContext.Orders
             .Include(x => x.Items)
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-        if (order == null) throw new ApplicationException("Not found");
+        if (order == null) throw new NotFoundApplicationException();
 
         var @lock = await _dbContext.Locks.FirstOrDefaultAsync(x =>
                 x.OwnerId == _currentUserService.CurrentUserId &&
