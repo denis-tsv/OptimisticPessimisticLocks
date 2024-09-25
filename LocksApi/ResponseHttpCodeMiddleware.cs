@@ -31,5 +31,13 @@ public class ResponseStatusCodeMiddleware
         {
             httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
         }
+        catch (LockedApplicationException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status423Locked;
+        }
+        catch (ApplicationException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
     }
 }

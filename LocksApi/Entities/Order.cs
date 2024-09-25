@@ -6,8 +6,8 @@ public class Order
 {
     public int Id { get; set; }
 
-    [Timestamp]
-    public uint Version { get; set; }
+    [ConcurrencyCheck]
+    public int? LockOwnerId { get; set; }
 
     public DateTime UpdatedAt { get; set; }
 

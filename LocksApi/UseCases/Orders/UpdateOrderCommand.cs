@@ -1,5 +1,6 @@
 using LocksApi.Entities;
 using LocksApi.UseCases.Exceptions;
+using LocksApi.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,6 @@ public record UpdateOrderCommand(UpdateOrderDto Dto) : IRequest;
 
 public record UpdateOrderDto(
     int Id,
-    uint Version,
     CreateOrderItemDto[]? CreatedItems,
     UpdateOrderItemDto[]? UpdatedItems,
     int[]? DeletedItems
@@ -20,8 +20,13 @@ public record UpdateOrderItemDto(int Id, int Quantity);
 public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
 {
     private readonly LocksDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public UpdateOrderCommandHandler(LocksDbContext dbContext) => _dbContext = dbContext;
+    public UpdateOrderCommandHandler(LocksDbContext dbContext, ICurrentUserService currentUserService)
+    {
+        _dbContext = dbContext;
+        _currentUserService = currentUserService;
+    }
 
     public async Task Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
@@ -30,9 +35,10 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand>
             .FirstOrDefaultAsync(x => x.Id == request.Dto.Id, cancellationToken);
         if (order == null) throw new NotFoundApplicationException();
 
-        if (order.Version != request.Dto.Version) throw new VersionObsoleteApplicationException();
+        if (order.LockOwnerId == null) throw new ApplicationException("Order must be locked before edit");
+        if (order.LockOwnerId != _currentUserService.CurrentUserId) throw new LockedApplicationException();
 
-        order.UpdatedAt = DateTime.UtcNow; //update version
+        order.UpdatedAt = DateTime.UtcNow;
 
         if (request.Dto.CreatedItems != null)
         {
