@@ -6,7 +6,7 @@ namespace LocksApi.UseCases.Products;
 
 public record GetProductQuery(int Id) : IRequest<GetProductDto>;
 
-public record GetProductDto(int Id, string Name);
+public record GetProductDto(int Id, string Name, uint Version);
 
 public class GetOrderQueryHandler : IRequestHandler<GetProductQuery, GetProductDto>
 {
@@ -18,7 +18,7 @@ public class GetOrderQueryHandler : IRequestHandler<GetProductQuery, GetProductD
     {
         var result = await _dbContext.Products
             .Where(x => x.Id == request.Id)
-            .Select(x => new GetProductDto(x.Id, x.Name))
+            .Select(x => new GetProductDto(x.Id, x.Name, x.Version))
             .FirstOrDefaultAsync(cancellationToken);
         if (result == null) throw new NotFoundApplicationException();
 

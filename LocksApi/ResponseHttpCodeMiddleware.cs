@@ -27,5 +27,9 @@ public class ResponseStatusCodeMiddleware
         {
             httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
         }
+        catch (VersionObsoleteApplicationException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+        }
     }
 }
